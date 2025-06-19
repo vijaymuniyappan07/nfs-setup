@@ -121,6 +121,10 @@ EOF
 ansible all -i inventory -m ping ## this will just do the ping test to check the connectivity.
 ansible-playbook -i inventory playbook.yaml -v --check ## Dry-run, see all the asks working without any error. [expect the failure in the last step during dry-run and thats fine]
 ansible-playbook -i inventory playbook.yaml -v
+
+# Run it again, for some reason ansible didn't apply the nfs dir permission change for the first time 
+
+ansible-playbook -i inventory playbook.yaml -v
 ```
 - If everything executed successfully the we have successfully deployed NFS server.
 
