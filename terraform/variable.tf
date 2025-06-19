@@ -31,6 +31,11 @@ variable "nfs_disk_size" {
   default     = 100
 }
 
+variable "nfs_disk_name" {
+  description = "Name of NFS data disk"
+  default     = "nfs-data-disk"
+}
+
 variable "instance_type" {
   description = "Machine type for NFS server"
   default     = "e2-medium"

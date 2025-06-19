@@ -53,7 +53,7 @@ resource "google_compute_instance" "nfs_server" {
 }
 
 resource "google_compute_disk" "nfs_data" {
-  name  = "nfs-data-disk"
+  name  = var.nfs_disk_name
   type  = "pd-standard"
   zone  = var.zone
   size  = 100 # GB, change as needed

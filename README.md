@@ -79,7 +79,7 @@ ssh-keygen -t ed25519 -f ~/.ssh/my-ansible-key -N ""
 ## 5. Configure Terraform Variables
 
 - Edit your terraform/variable.tf file and update the default variable values if needed. 
-- Note: Consider updating `nfs_instance_name` and `nfs_labels` variables.
+- Note: Consider updating `nfs_instance_name`, `nfs_labels` and `nfs_disk_name` variables, otherwise you may get the failure if the instance and disk already present with same name.
 
 ---
 
@@ -108,7 +108,7 @@ export NFS_IP=$(terraform output -raw nfs_server_internal_ip)
 cd ansible
 cat <<EOF > inventory
 [nfs]
-$NFS_IP ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/my-ansible-keymy-ansible-key
+$NFS_IP ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/my-ansible-key
 EOF
 ```
 - Review the inventory file and make sure it has the internal IP of our nfs machine.
