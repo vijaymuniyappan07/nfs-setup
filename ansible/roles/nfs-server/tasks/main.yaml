@@ -50,7 +50,13 @@
     nfs_group: nfsnobody
   when: ansible_facts['os_family'] != "Debian"
 
-- name: Create export directory
+- name: Ensure export directory exists
+  file:
+    path: "{{ nfs_export_path }}"
+    state: directory
+    mode: '0755'
+
+- name: Ensure correct permissions on export directory
   file:
     path: "{{ nfs_export_path }}"
     state: directory

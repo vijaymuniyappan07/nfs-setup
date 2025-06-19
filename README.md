@@ -95,6 +95,7 @@ terraform init
 #### B. Review and Apply
 ```
 terraform plan ## This won't make any change and will just do dry-run operation
+## If eveything is ok you should see this result Plan: `2 to add, 0 to change, 0 to destroy.`
 terraform apply ## This actually applies the config. Review the plan and submit yes to apply the changes. 
 ```
 - Confirm when prompted.
@@ -105,7 +106,7 @@ terraform apply ## This actually applies the config. Review the plan and submit 
 ## 7. Prepare Ansible Inventory Automatically
 ```
 export NFS_IP=$(terraform output -raw nfs_server_internal_ip)
-cd ansible
+cd ../ansible
 cat <<EOF > inventory
 [nfs]
 $NFS_IP ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/my-ansible-key
@@ -118,7 +119,7 @@ EOF
 ## 8. Run Ansible Playbook to Configure NFS
 ```
 ansible all -i inventory -m ping ## this will just do the ping test to check the connectivity.
-ansible-playbook -i inventory playbook.yaml -v -- check ## Dry-run, see all the asks working without any error. [expect the failure in the last step during dry-run and thats fine]
+ansible-playbook -i inventory playbook.yaml -v --check ## Dry-run, see all the asks working without any error. [expect the failure in the last step during dry-run and thats fine]
 ansible-playbook -i inventory playbook.yaml -v
 ```
 - If everything executed successfully the we have successfully deployed NFS server.
