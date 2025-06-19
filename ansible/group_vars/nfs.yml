@@ -1,0 +1,3 @@
+nfs_export_path: "/data"
+nfs_export_cidr: "**"
+nfs_disk_device: "/dev/disk/by-id/google-nfsdata"

@@ -1,0 +1,2 @@
+[nfs]
+10.30.176.166 ansible_user=vmuniyappan_cloudbees_com ansible_ssh_private_key_file=~/.ssh/id_ed25519

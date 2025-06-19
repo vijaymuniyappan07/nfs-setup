@@ -1,0 +1,67 @@
+# -----------------------------
+# Terraform
+# -----------------------------
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform/
+.crash/
+*.log
+override.tf
+override.tf.json
+terraform.tfvars.json
+
+# Sometimes generated when using Terraform plugins
+.terraform.lock.hcl
+
+# Terraform plan files
+*.tfplan
+
+# Sensitive or auto-generated local files
+.secret.tfvars
+*.auto.tfvars
+*.bak
+
+# IDE/editor-specific files (optional but useful)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# -----------------------------
+# Ansible
+# -----------------------------
+# Inventory or secrets files (if generated or sensitive)
+inventory.ini
+*.retry
+*.vault
+*.key
+
+# Logs and temporary files
+*.log
+*.tmp
+*.out
+
+# Python virtualenvs (if used)
+.env/
+.venv/
+__pycache__/
+*.pyc
+
+# Ansible roles installed via galaxy (optional)
+roles/
+collections/
+
+# If using molecule for testing
+.molecule/
+
+# Vault password files (should never be committed)
+.vault_pass.txt
+
+# -----------------------------
+# General (shared between tools)
+# -----------------------------
+*.bak
+*.orig
+.DS_Store
+Thumbs.db
