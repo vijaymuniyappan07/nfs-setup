@@ -95,7 +95,9 @@ terraform init
 #### B. Review and Apply
 ```
 terraform plan ## This won't make any change and will just do dry-run operation
+
 ## If eveything is ok you should see this result Plan: `2 to add, 0 to change, 0 to destroy.`
+
 terraform apply ## This actually applies the config. Review the plan and submit yes to apply the changes. 
 ```
 - Confirm when prompted.
