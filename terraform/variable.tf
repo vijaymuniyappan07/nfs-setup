@@ -12,7 +12,10 @@ variable "zone" {
   description = "Zone for resources"
   default = "us-west2-a"
 }
-
+variable "nfs_instance_name" {
+  description = "Name of the NFS server instance"
+  default     = "nfs-server"
+}
 variable "network_name" {
   description = "GCP VPC network"
   default = "projects/ops-shared-vpc/global/networks/ops-vpc1"
@@ -38,6 +41,13 @@ variable "nfs_export_path" {
   default     = "/data"
 }
 
+variable "nfs_labels" {
+  description = "Labels to apply to NFS resources"
+  type        = map(string)
+  default     = {
+    cb-user = "vijay"
+  }
+}
 # variable "fw_allowed_cidrs" {
 #   description = "Networks allowed through NFS firewall"
 #   type        = list(string)

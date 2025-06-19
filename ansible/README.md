@@ -5,20 +5,28 @@ This repository contains Ansible playbooks and roles to automate the setup of an
 ---
 
 ## 📦 Directory Structure
-
-├── group_vars
-│   └── nfs.yml
-├── inventory
-├── playbook.yaml
-└── roles
-    └── nfs-server
-        ├── handlers
-        │   └── main.yaml
-        ├── tasks
-        │   └── main.yaml
-        ├── templates
-        └── vars
-            └── main.yaml
+```
+├── ansible
+│   ├── README.md
+│   ├── group_vars
+│   │   └── nfs.yml
+│   ├── inventory
+│   ├── playbook.yaml
+│   └── roles
+│       └── nfs-server
+│           ├── handlers
+│           │   └── main.yaml
+│           ├── tasks
+│           │   └── main.yaml
+│           ├── templates
+│           └── vars
+│               └── main.yaml
+├── terraform
+│   ├── main.tf
+│   ├── terraform.tfstate
+│   ├── terraform.tfstate.backup
+│   └── variable.tf
+```
 
 
 ---

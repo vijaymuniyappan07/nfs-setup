@@ -1,0 +1,91 @@
+---
+# roles/nfs-server/tasks/main.yml
+
+- name: Install NFS server on Debian/Ubuntu
+  apt:
+    name: nfs-kernel-server
+    state: present
+    update_cache: yes
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Install NFS server on RHEL/CentOS/Amazon
+  yum:
+    name: nfs-utils
+    state: present
+    update_cache: yes
+  when: ansible_facts['os_family'] == "RedHat"
+
+- name: Install NFS server on Oracle Linux/Rocky/Alma (optional, same as RHEL)
+  dnf:
+    name: nfs-utils
+    state: present
+    update_cache: yes
+  when: ansible_facts['os_family'] in ["Rocky", "AlmaLinux", "OracleLinux"]
+
+- name: Check for existing filesystem
+  command: lsblk -n -o FSTYPE {{ nfs_disk_device }}
+  register: fstype_result
+  changed_when: false
+
+- name: Format NFS disk only if it is blank
+  filesystem:
+    fstype: ext4
+    dev: "{{ nfs_disk_device }}"
+  when: fstype_result.stdout.strip() == ""
+# - name: Format NFS disk if needed
+#   filesystem:
+#     fstype: ext4
+#     dev: "{{ nfs_disk_device }}"
+#   ignore_errors: true
+
+- name: Set default NFS share owner/group for Debian
+  set_fact:
+    nfs_owner: nobody
+    nfs_group: nogroup
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Set default NFS share owner/group for RHEL
+  set_fact:
+    nfs_owner: nfsnobody
+    nfs_group: nfsnobody
+  when: ansible_facts['os_family'] != "Debian"
+
+- name: Create export directory
+  file:
+    path: "{{ nfs_export_path }}"
+    state: directory
+    owner: "{{ nfs_owner | default('nobody') }}"
+    group: "{{ nfs_group | default('nogroup') }}"
+    mode: '0777'
+
+- name: Mount NFS disk and ensure entry in /etc/fstab
+  mount:
+    path: "{{ nfs_export_path }}"
+    src: "{{ nfs_disk_device }}"
+    fstype: ext4
+    opts: "defaults"
+    state: mounted
+    dump: 0
+    passno: 2
+
+- name: Export NFS share to cluster CIDR via /etc/exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{ nfs_export_path }} {{ nfs_export_cidr }}(rw,sync,no_subtree_check,no_root_squash)"
+    create: yes
+    state: present
+  notify: Reload NFS exports
+
+- name: Ensure NFS server is running and enabled (Debian/Ubuntu)
+  service:
+    name: nfs-kernel-server
+    state: started
+    enabled: yes
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Ensure NFS server is running and enabled (RHEL/CentOS/Amazon/etc)
+  service:
+    name: nfs-server
+    state: started
+    enabled: yes
+  when: ansible_facts['os_family'] != "Debian"

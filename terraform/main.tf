@@ -5,14 +5,12 @@ provider "google" {
 }
 
 resource "google_compute_instance" "nfs_server" {
-  name         = "nfs-server"
+  name         = var.nfs_instance_name
   machine_type = var.instance_type
   zone         = var.zone
   description = var.nfs_server_description
   
-  labels = {
-    cb-user = "vijay"
-  }
+  labels = var.nfs_labels
   
   boot_disk {
     initialize_params {
@@ -34,6 +32,24 @@ resource "google_compute_instance" "nfs_server" {
 
   tags = ["nat-gw", "flow-chronic3-cluster", "cd-artemis-us-west2"]
   allow_stopping_for_update = true
+  metadata = {
+    startup-script = <<-EOT
+      #!/bin/bash
+      if ! id -u ansible &>/dev/null; then
+        useradd -m -s /bin/bash ansible
+      fi
+      mkdir -p /home/ansible/.ssh
+      echo '${file("~/.ssh/my-ansible-key.pub")}' > /home/ansible/.ssh/authorized_keys
+      chown -R ansible:ansible /home/ansible/.ssh
+      chmod 700 /home/ansible/.ssh
+      chmod 600 /home/ansible/.ssh/authorized_keys
+      usermod -aG sudo ansible 2>/dev/null || usermod -aG wheel ansible 2>/dev/null
+
+      # Passwordless sudo for ansible user
+      echo 'ansible ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/99_ansible
+      chmod 440 /etc/sudoers.d/99_ansible
+    EOT
+  }
 }
 
 resource "google_compute_disk" "nfs_data" {
@@ -47,18 +63,7 @@ resource "google_compute_disk" "nfs_data" {
     description = "Persistent disk for NFS server data can be deleted after use"
 }
 
-# resource "google_compute_firewall" "nfs_server_allow" {
-#   name    = "allow-nfs"
-#   network = var.network_name
 
-#   allow {
-#     protocol = "tcp"
-#     ports    = ["2049"]
-#   }
-
-#   source_ranges = var.allowed_cidrs # e.g. ["10.0.0.0/16", "10.1.0.0/16"]
-#   target_tags   = ["nfs-server"]
-# }
 
 output "nfs_server_internal_ip" {
   value = google_compute_instance.nfs_server.network_interface[0].network_ip

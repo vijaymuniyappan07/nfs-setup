@@ -49,7 +49,7 @@ __pycache__/
 *.pyc
 
 # Ansible roles installed via galaxy (optional)
-roles/
+# roles/
 collections/
 
 # If using molecule for testing
